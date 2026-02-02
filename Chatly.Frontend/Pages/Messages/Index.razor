@@ -1,0 +1,55 @@
+﻿@using Chatly.Frontend.Pages.Messages.Components
+
+@attribute [Route(Routes.Pages.Messages.Index)]
+
+<PageTitle>Messages</PageTitle>
+
+<div class="mb-5">
+    <AddMessageForm Command="new AddMessageCommand()" OnMessageAdded="RefreshMessages"/>
+</div>
+
+<div>
+    All messages:
+</div>
+
+@if (_messages is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <table class="table">
+        <tbody>
+            @foreach (var message in _messages)
+            {
+                <tr>
+                    <td>@message.Text</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {   
+    [Inject]
+    public  HttpClient HttpClient { get; set; } = null!;
+    
+    private List<MessageDto>? _messages;
+
+    private async Task LoadMessagesAsync()
+    {
+        _messages = await HttpClient.GetFromJsonAsync<List<MessageDto>>(
+            Routes.Api.Messages.GetAll);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMessagesAsync();
+    }
+
+    private async Task RefreshMessages()
+    {
+        await LoadMessagesAsync();
+        StateHasChanged();
+    }
+}

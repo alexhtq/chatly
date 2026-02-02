@@ -1,0 +1,15 @@
+@Base = http://localhost:5294/api/messages
+
+### Get all messages
+GET {{Base}}
+
+### Create message
+POST {{Base}}
+Content-Type: application/json
+
+{
+  "text": ""
+}
+
+### Get message by id
+GET {{Base}}/d788724c-db1a-4466-abec-2d92d6a6ae0a
