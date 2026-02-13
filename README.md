@@ -1,16 +1,21 @@
 # Chatly
 
-Chatly is a messaging application built with .NET 10.
+Chatly is a simple messaging application built with .NET 10.
 
 ## Getting Started
 
 To launch the application:
 
-1. Start the API project (`Chatly.Messages.Api`).
-2. Once the API project is running, the application will be ready to use at the following URL: [http://localhost:5294](http://localhost:5294)
+1. Navigate to the root directory.
+2. Build and start the services using Docker Compose:
 
-No additional projects need to be started.
+   ```bash
+   docker compose up --build
+   ```
+
+3. The frontend home page will be available at [http://localhost:4000](http://localhost:4000).
+4. The backend API will be available at [http://localhost:8080](http://localhost:8080).
 
 ## Notes
 
-For detailed implementation notes, see the pull request descriptions in this repository.
+Refer to PRs for detailed implementation notes.

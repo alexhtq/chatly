@@ -16,14 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers/" />
-    <Folder Include="Database/Configurations/" />
-    <Folder Include="Middleware/" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Chatly.Frontend\Chatly.Frontend.csproj" />
-    <ProjectReference Include="..\..\..\Chatly.Shared\Chatly.Shared.csproj" />
+    <ProjectReference Include="$(SharedProjectPathForApi)" />
   </ItemGroup>
 
 </Project>
