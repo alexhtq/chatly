@@ -11,11 +11,16 @@ public static class ConfigureServices
     public static void AddServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
+        
         builder.Services.AddOpenApi();
+        
         builder.Services.AddDbContext<MessagesContext>(opts =>
             opts.UseInMemoryDatabase("MessagesInMemoryDB"));
+        
         builder.Services.AddValidatorsFromAssemblyContaining<AddMessageValidator>();
+        
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();   
+        
         builder.Services.AddProblemDetails(opts =>
             opts.CustomizeProblemDetails = context =>
             {
@@ -24,5 +29,14 @@ public static class ConfigureServices
                 context.ProblemDetails.Extensions.Add(
                     "requestId", context.HttpContext.TraceIdentifier);
             });
+
+        builder.Services.AddCors(options =>
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:4000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            }));
     }
 }

@@ -17,9 +17,4 @@
     <ProjectReference Include="..\Chatly.Shared\Chatly.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\Messages\" />
-    <Folder Include="Pages\Messages\Components\" />
-  </ItemGroup>
-
 </Project>

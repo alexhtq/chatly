@@ -26,7 +26,8 @@
     
     private async Task OnValidSubmitAsync()
     {       
-        var response = await HttpClient.PostAsJsonAsync(Routes.Api.Messages.Create, Command);
+        var response = await HttpClient.PostAsJsonAsync(
+            Routes.Api.Messages.Create, Command);
 
         if (response.IsSuccessStatusCode)
             await OnMessageAdded.InvokeAsync();
