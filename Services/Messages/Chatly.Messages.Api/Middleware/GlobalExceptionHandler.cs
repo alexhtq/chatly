@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Chatly.Messages.Api.Middleware;
 
-public class GlobalExceptionHandler(ProblemDetailsFactory problemDetailsFactory)
-    : IExceptionHandler
+public class GlobalExceptionHandler(ProblemDetailsFactory problemDetailsFactory) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,

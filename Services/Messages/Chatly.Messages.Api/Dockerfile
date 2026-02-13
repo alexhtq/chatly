@@ -11,7 +11,6 @@ RUN dotnet publish "Chatly.Messages.Api.csproj" -c Release -o /app/publish /p:Us
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Chatly.Messages.Api.dll"]

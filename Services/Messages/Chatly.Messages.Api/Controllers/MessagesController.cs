@@ -34,12 +34,13 @@ public class MessagesController(MessagesContext context) : ControllerBase
     {
         var validationResult = await validator.ValidateAsync(command);
 
-        if (!validationResult.IsValid)
+        if (validationResult.IsValid is false)
         {
             var problem = ProblemDetailsFactory.CreateProblemDetails(
                 httpContext: HttpContext,
                 statusCode: StatusCodes.Status400BadRequest,
                 detail: "One or more validation errors occurred.");
+            
             problem.Extensions.Add("errors", validationResult.ToDictionary());
 
             return BadRequest(problem);
@@ -66,8 +67,11 @@ public class MessagesController(MessagesContext context) : ControllerBase
             .ProjectToDto()
             .FirstOrDefaultAsync(m => m.Id == id);
             
-        return message == null
-            ? NotFound()
-            : Ok(message);
+        if (message is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(message);
     }
 }

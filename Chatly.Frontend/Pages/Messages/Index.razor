@@ -38,8 +38,7 @@ else
 
     private async Task LoadMessagesAsync()
     {
-        _messages = await HttpClient.GetFromJsonAsync<List<MessageDto>>(
-            Routes.Api.Messages.GetAll);
+        _messages = await HttpClient.GetFromJsonAsync<List<MessageDto>>(Routes.Api.Messages.GetAll);
     }
 
     protected override async Task OnInitializedAsync()

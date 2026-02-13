@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chatly.Messages.Api.Database;
 
-public class MessagesContext(DbContextOptions<MessagesContext> options)
-    : DbContext(options)
+public class MessagesContext(DbContextOptions<MessagesContext> options) : DbContext(options)
 {
     public DbSet<Message> Messages => Set<Message>();
 

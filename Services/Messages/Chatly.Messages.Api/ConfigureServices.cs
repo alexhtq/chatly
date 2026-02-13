@@ -14,29 +14,36 @@ public static class ConfigureServices
         
         builder.Services.AddOpenApi();
         
-        builder.Services.AddDbContext<MessagesContext>(opts =>
-            opts.UseInMemoryDatabase("MessagesInMemoryDB"));
+        builder.Services.AddDbContext<MessagesContext>(options =>
+        {
+            options.UseInMemoryDatabase("MessagesInMemoryDB");    
+        });
         
         builder.Services.AddValidatorsFromAssemblyContaining<AddMessageValidator>();
         
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();   
         
-        builder.Services.AddProblemDetails(opts =>
-            opts.CustomizeProblemDetails = context =>
+        builder.Services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
             {
                 context.ProblemDetails.Instance =
                     $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
                 context.ProblemDetails.Extensions.Add(
                     "requestId", context.HttpContext.TraceIdentifier);
-            });
+            };      
+        });
 
+        var allowedOrigin = builder.Configuration.GetValue<string>("Cors:AllowedOrigin") ?? string.Empty;
         builder.Services.AddCors(options =>
+        {
             options.AddPolicy("AllowFrontend", policy =>
             {
                 policy
-                    .WithOrigins("http://localhost:4000")
+                    .WithOrigins(allowedOrigin)
                     .AllowAnyHeader()
                     .AllowAnyMethod();
-            }));
+            });
+        });
     }
 }

@@ -4,7 +4,7 @@ public static class ConfigureApp
 {
     public static async Task Configure(this WebApplication app)
     {            
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() is true)
         {
             app.MapOpenApi();
             app.UseSwaggerUI(opts =>
@@ -12,12 +12,11 @@ public static class ConfigureApp
         }
         
         app.UseExceptionHandler();
-        app.UseHttpsRedirection();
         app.UseCors("AllowFrontend");
         
         var hostBlazorApp = app.Configuration.GetValue("HostBlazorApp", true);
         
-        if (hostBlazorApp)
+        if (hostBlazorApp is true)
         {
             app.UseWebAssemblyDebugging();
             app.UseStaticFiles();
@@ -26,7 +25,7 @@ public static class ConfigureApp
 
         app.MapControllers();
 
-        if (hostBlazorApp)
+        if (hostBlazorApp is true)
         {
             app.MapFallbackToFile("index.html");
         }
