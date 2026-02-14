@@ -7,7 +7,7 @@ public static class Routes
         public static class Messages
         {
             public const string GetAll = "api/messages";
-            public const string Get = "api/messages/{id:Guid}";
+            public const string GetById = "api/messages/{id:Guid}";
             public const string Create = "api/messages";
         }
     }

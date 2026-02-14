@@ -1,5 +1,6 @@
 using Chatly.Messages.Api.Database;
 using Chatly.Messages.Api.Middleware;
+using Chatly.Messages.Api.Services;
 using Chatly.Shared.Messages.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ public static class ConfigureServices
         {
             options.UseInMemoryDatabase("MessagesInMemoryDB");    
         });
+        
+        builder.Services.AddScoped<IMessageService, MessageService>();
         
         builder.Services.AddValidatorsFromAssemblyContaining<AddMessageValidator>();
         

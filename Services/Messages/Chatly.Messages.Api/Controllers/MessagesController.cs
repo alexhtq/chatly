@@ -1,28 +1,44 @@
-using Chatly.Messages.Api.Database;
+using Chatly.Messages.Api.Entities;
 using Chatly.Messages.Api.Extensions;
+using Chatly.Messages.Api.Services;
 using Chatly.Shared.Constants;
 using Chatly.Shared.Messages;
 using Chatly.Shared.Messages.Commands;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Chatly.Messages.Api.Controllers;
  
 [ApiController]
-public class MessagesController(MessagesContext context) : ControllerBase
+public class MessagesController(IMessageService messageService) : ControllerBase
 {
-    private readonly MessagesContext _context = context;
+    private readonly IMessageService _messageService = messageService;
     
     [HttpGet(Routes.Api.Messages.GetAll)]
     [ProducesResponseType(typeof(List<MessageDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<MessageDto>>> GetAll()
+    public async Task<ActionResult<List<MessageDto>>> GetAll(
+        CancellationToken token = default)
     {
-        var messages = await _context.Messages
-            .ProjectToDto()
-            .ToListAsync();
-        
+        List<MessageDto> messages = await _messageService.GetAllAsync(token);
+
         return Ok(messages);
+    }
+
+    [HttpGet(Routes.Api.Messages.GetById)]
+    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<MessageDto>> GetById(
+        [FromRoute] Guid id,
+        CancellationToken token = default)
+    {
+        MessageDto? message = await _messageService.GetByIdAsync(id, token);
+            
+        if (message is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(message);
     }
     
     [HttpPost(Routes.Api.Messages.Create)]
@@ -30,7 +46,8 @@ public class MessagesController(MessagesContext context) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MessageDto>> Create(
         [FromBody] AddMessageCommand command,
-        IValidator<AddMessageCommand> validator)
+        IValidator<AddMessageCommand> validator,
+        CancellationToken token = default)
     {
         var validationResult = await validator.ValidateAsync(command);
 
@@ -46,32 +63,12 @@ public class MessagesController(MessagesContext context) : ControllerBase
             return BadRequest(problem);
         }
 
-        var message = command.MapToNewMessage();
-        
-        await _context.Messages.AddAsync(message);
-        
-        await _context.SaveChangesAsync();
+        Message message = command.MapToNewMessage();
+        await _messageService.CreateAsync(message, token);
 
         return CreatedAtAction(
-            nameof(Get),
+            nameof(GetById),
             new { id = message.Id },
             message.ProjectToDto());
-    }
-
-    [HttpGet(Routes.Api.Messages.Get)]
-    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MessageDto?>> Get([FromRoute] Guid id)
-    {
-        var message = await _context.Messages
-            .ProjectToDto()
-            .FirstOrDefaultAsync(m => m.Id == id);
-            
-        if (message is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(message);
     }
 }
