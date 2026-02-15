@@ -14,5 +14,7 @@ public class MessageConfguration : IEntityTypeConfiguration<Message>
         builder.Property(m => m.Text)
             .IsRequired()
             .HasMaxLength(MaxLengths.Messages.Text);
+
+        builder.ToTable("Messages");
     }
 }

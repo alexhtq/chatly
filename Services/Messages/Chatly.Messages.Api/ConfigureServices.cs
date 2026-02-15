@@ -12,20 +12,17 @@ public static class ConfigureServices
     public static void AddServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
-        
         builder.Services.AddOpenApi();
-        
-        builder.Services.AddDbContext<MessagesContext>(options =>
-        {
-            options.UseInMemoryDatabase("MessagesInMemoryDB");    
-        });
-        
-        builder.Services.AddScoped<IMessageService, MessageService>();
-        
         builder.Services.AddValidatorsFromAssemblyContaining<AddMessageValidator>();
-        
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();   
-        
+        builder.Services.AddScoped<IMessageService, MessageService>();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.AddProblemDetailsForFailedRequests();
+        builder.AddDatabase();
+        builder.AddCorsPolicy();
+    }
+
+    private static void AddProblemDetailsForFailedRequests(this WebApplicationBuilder builder)
+    {
         builder.Services.AddProblemDetails(options =>
         {
             options.CustomizeProblemDetails = context =>
@@ -36,8 +33,25 @@ public static class ConfigureServices
                     "requestId", context.HttpContext.TraceIdentifier);
             };      
         });
+    }
 
+    private static void AddDatabase(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddDbContext<MessagesContext>(options =>
+        {
+            var dbConnectionString = builder.Configuration.GetConnectionString("Database")
+                ?? throw new InvalidOperationException("ConnectionStrings:Database configuration is required");
+
+            options
+                .UseNpgsql(dbConnectionString)
+                .LogTo(Console.WriteLine);
+        });
+    }
+
+    private static void AddCorsPolicy(this WebApplicationBuilder builder)
+    {
         var allowedOrigin = builder.Configuration.GetValue<string>("Cors:AllowedOrigin") ?? string.Empty;
+        
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowFrontend", policy =>
