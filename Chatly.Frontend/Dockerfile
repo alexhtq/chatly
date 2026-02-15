@@ -11,3 +11,4 @@ RUN dotnet publish "Chatly.Frontend.csproj" -c Release -o /app/publish /p:UseApp
 # Runtime stage
 FROM nginx:alpine
 COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
+COPY Chatly.Frontend/default.conf /etc/nginx/conf.d/default.conf
