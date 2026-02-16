@@ -1,4 +1,5 @@
 using Chatly.Messages.Api.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chatly.Messages.Api;
 
@@ -10,7 +11,7 @@ public static class ConfigureApp
         app.UseSwaggerUI(opts =>
             opts.SwaggerEndpoint("/openapi/v1.json", "Messenger"));
 
-        await app.HandleDatabaseSchemaAsync();
+        await app.ApplyMigrationsAsync();
         
         app.UseExceptionHandler();
         app.UseCors("AllowFrontend");
@@ -33,13 +34,20 @@ public static class ConfigureApp
         }
     }
 
-    private static async Task HandleDatabaseSchemaAsync(this WebApplication app)
+    private static async Task ApplyMigrationsAsync(this WebApplication app)
     {
-        // Temporary solution that drops and creates the database schema on each run.
-        // Will be replaced with proper migrations in the future.
-        var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<MessagesContext>();
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.EnsureCreated();
+        using var scope = app.Services.CreateScope();
+        await using var messagesContext = scope.ServiceProvider.GetRequiredService<MessagesContext>();
+
+        try
+        {
+            await messagesContext.Database.MigrateAsync();
+            app.Logger.LogInformation("Application database migrations applied successfully.");
+        }
+        catch (Exception e)
+        {
+            app.Logger.LogError(e, "An error occurred while applying database migrations.");
+            throw;
+        }
     }
 }

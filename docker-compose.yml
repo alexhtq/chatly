@@ -18,7 +18,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - database
+      database:
+        condition: service_healthy  # Wait until health check passes
 
   database:
     image: postgres:latest
@@ -28,3 +29,8 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d chatly"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
