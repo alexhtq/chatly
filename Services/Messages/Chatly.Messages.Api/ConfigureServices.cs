@@ -13,7 +13,7 @@ public static class ConfigureServices
     {
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
-        builder.Services.AddValidatorsFromAssemblyContaining<AddMessageValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateMessageValidator>();
         builder.Services.AddScoped<IMessageService, MessageService>();
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.AddProblemDetailsForFailedRequests();

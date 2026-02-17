@@ -19,7 +19,7 @@
     public EventCallback OnMessageAdded { get; set; }
 
     [Parameter, EditorRequired]
-    public AddMessageCommand Command { get; set; } = null!;
+    public CreateMessageCommand Command { get; set; } = null!;
 
     [Inject]
     public HttpClient HttpClient { get; set; } = null!;

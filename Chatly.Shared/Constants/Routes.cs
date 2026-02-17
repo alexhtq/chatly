@@ -9,6 +9,8 @@ public static class Routes
             public const string GetAll = "api/messages";
             public const string GetById = "api/messages/{id:Guid}";
             public const string Create = "api/messages";
+            public const string Update = "api/messages/{id:Guid}";
+            public const string Delete = "api/messages/{id:Guid}";
         }
     }
 
