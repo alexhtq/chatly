@@ -1,15 +1,26 @@
-@Base = http://localhost:8080/api/messages
+@Base = http://localhost:4200/api/messages
 
-### Get all messages
+### Get all
 GET {{Base}}
 
-### Get message by id
-GET {{Base}}/b6e9c055-4a2f-4c26-b254-5495abcd8a98
+### Get by id
+GET {{Base}}/019c6cf4-3752-7fb5-845c-2973dcd2391f
 
-### Create message
+### Create
 POST {{Base}}
 Content-Type: application/json
 
 {
-  "text": "test message"
+  "text": "Message #2"
 }
+
+### Update
+PUT {{Base}}/019c6cf4-3752-7fb5-845c-2973dcd2391f
+Content-Type: application/json
+
+{
+  "text": "updated message"
+}
+
+### Delete
+DELETE {{Base}}/019c6cf4-3752-7fb5-845c-2973dcd2391f

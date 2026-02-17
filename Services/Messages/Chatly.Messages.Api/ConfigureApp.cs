@@ -42,7 +42,7 @@ public static class ConfigureApp
         try
         {
             await messagesContext.Database.MigrateAsync();
-            app.Logger.LogInformation("Application database migrations applied successfully.");
+            app.Logger.LogInformation("Database migrations applied successfully.");
         }
         catch (Exception e)
         {

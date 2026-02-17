@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace Chatly.Shared.Messages.Validators;
 
-public class AddMessageValidator : AbstractValidator<AddMessageCommand>
+public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
 {
-    public AddMessageValidator()
+    public CreateMessageValidator()
     {
         RuleFor(x => x.Text)
             .NotEmpty()
