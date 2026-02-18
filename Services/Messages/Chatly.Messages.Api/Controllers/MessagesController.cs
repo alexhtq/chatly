@@ -44,7 +44,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
         IValidator<CreateMessageCommand> validator,
         CancellationToken token = default)
     {
-        var validationResult = await validator.ValidateAsync(command);
+        var validationResult = await validator.ValidateAsync(command, token);
 
         if (validationResult.IsValid is false)
         {
@@ -58,12 +58,12 @@ public class MessagesController(IMessageService messageService) : ControllerBase
             return BadRequest(problem);
         }
 
-        var message = await _messageService.CreateAsync(command, token);
+        MessageDto createdMessage = await _messageService.CreateAsync(command, token);
 
         return CreatedAtAction(
             nameof(GetById),
-            new { id = message.Id },
-            message);
+            new { id = createdMessage.Id },
+            createdMessage);
     }
 
     [HttpPut(Routes.Api.Messages.Update)]
@@ -76,7 +76,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     {     
         MessageDto? updatedMessage = await _messageService.UpdateAsync(id, command, token);
             
-        if (updatedMessage == null)
+        if (updatedMessage is null)
         {
             return NotFound();
         }

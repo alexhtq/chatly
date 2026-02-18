@@ -52,7 +52,7 @@ public class MessageService(MessagesContext context) : IMessageService
         Message? existingMessage = await _context.Messages
             .FirstOrDefaultAsync(m => m.Id == messageInput.Id, token);
 
-        if (existingMessage == null)
+        if (existingMessage is null)
         {
             return null;
         }
@@ -68,7 +68,7 @@ public class MessageService(MessagesContext context) : IMessageService
     {
         var existingMessage =  await _context.Messages.FindAsync(id, token);
 
-        if (existingMessage == null)
+        if (existingMessage is null)
         {
             return false;
         }

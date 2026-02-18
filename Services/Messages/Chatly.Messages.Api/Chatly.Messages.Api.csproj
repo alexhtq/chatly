@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="$(SharedProjectPathForApi)" />
+    <ProjectReference Include="../../../Chatly.Frontend/Chatly.Frontend.csproj" />
   </ItemGroup>
 
 </Project>
