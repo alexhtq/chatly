@@ -13,8 +13,8 @@ public class MessageConfguration : IEntityTypeConfiguration<Message>
             .ToTable("Messages")
             .HasKey (m => m.Id);
 
-        builder.Property(m => m.Text)
+        builder.Property(m => m.Content)
             .IsRequired()
-            .HasMaxLength(MaxLengths.Messages.Text);
+            .HasMaxLength(MaxLengths.Messages.Content);
     }
 }

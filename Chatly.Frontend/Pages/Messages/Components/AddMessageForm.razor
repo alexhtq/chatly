@@ -4,9 +4,9 @@
         <div class="col-12">
             <label class="w-50">
                 Your message:
-                <InputTextArea class="form-control" @bind-Value="Command.Text" rows="2"/>
+                <InputTextArea class="form-control" @bind-Value="Command.Content" rows="2"/>
             </label>
-            <ValidationMessage For="() => Command.Text"/>
+            <ValidationMessage For="() => Command.Content"/>
         </div>
     </div>   
     <div class="d-flex align-items-center gap-1">
