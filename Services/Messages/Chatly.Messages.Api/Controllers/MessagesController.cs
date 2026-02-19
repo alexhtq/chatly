@@ -9,14 +9,12 @@ namespace Chatly.Messages.Api.Controllers;
  
 [ApiController]
 public class MessagesController(IMessageService messageService) : ControllerBase
-{
-    private readonly IMessageService _messageService = messageService;
-    
+{    
     [HttpGet(Routes.Api.Messages.GetAll)]
     [ProducesResponseType(typeof(List<MessageDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<MessageDto>>> GetAll(CancellationToken token = default)
     {
-        List<MessageDto> messages = await _messageService.GetAllAsync(token);
+        List<MessageDto> messages = await messageService.GetAllAsync(token);
 
         return Ok(messages);
     }
@@ -26,7 +24,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MessageDto>> GetById([FromRoute] Guid id, CancellationToken token = default)
     {
-        MessageDto? message = await _messageService.GetByIdAsync(id, token);
+        MessageDto? message = await messageService.GetByIdAsync(id, token);
             
         if (message is null)
         {
@@ -58,7 +56,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
             return BadRequest(problem);
         }
 
-        MessageDto createdMessage = await _messageService.CreateAsync(command, token);
+        MessageDto createdMessage = await messageService.CreateAsync(command, token);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -74,7 +72,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
         [FromBody] UpdateMessageCommand command,
         CancellationToken token = default)
     {     
-        MessageDto? updatedMessage = await _messageService.UpdateAsync(id, command, token);
+        MessageDto? updatedMessage = await messageService.UpdateAsync(id, command, token);
             
         if (updatedMessage is null)
         {
@@ -89,7 +87,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken token = default)
     {
-        bool isDeleted = await _messageService.DeleteAsync(id, token);
+        bool isDeleted = await messageService.DeleteAsync(id, token);
 
         if (isDeleted is false)
         {

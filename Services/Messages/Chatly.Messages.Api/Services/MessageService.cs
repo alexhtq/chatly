@@ -9,11 +9,9 @@ namespace Chatly.Messages.Api.Services;
 
 public class MessageService(MessagesContext context) : IMessageService
 {
-    private readonly MessagesContext _context = context;
-
     public async Task<List<MessageDto>> GetAllAsync(CancellationToken token = default)
     {
-        List<MessageDto> messages = await _context.Messages
+        List<MessageDto> messages = await context.Messages
             .ProjectToDto()
             .ToListAsync(token);
         
@@ -22,7 +20,7 @@ public class MessageService(MessagesContext context) : IMessageService
 
     public async Task<MessageDto?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        MessageDto? message = await _context.Messages
+        MessageDto? message = await context.Messages
             .ProjectToDto()
             .FirstOrDefaultAsync(m => m.Id == id, token);
             
@@ -36,9 +34,9 @@ public class MessageService(MessagesContext context) : IMessageService
             Content = command.Content
         };
          
-        await _context.Messages.AddAsync(message, token);
+        await context.Messages.AddAsync(message, token);
         
-        await _context.SaveChangesAsync(token);
+        await context.SaveChangesAsync(token);
 
         return message.ProjectToDto();
     }
@@ -48,7 +46,7 @@ public class MessageService(MessagesContext context) : IMessageService
         UpdateMessageCommand command,
         CancellationToken token = default)
     {        
-        Message? existingMessage = await _context.Messages
+        Message? existingMessage = await context.Messages
             .FirstOrDefaultAsync(m => m.Id == id, token);
 
         if (existingMessage is null)
@@ -58,23 +56,23 @@ public class MessageService(MessagesContext context) : IMessageService
 
         existingMessage.Content = command.Content;
 
-        await _context.SaveChangesAsync(token);
+        await context.SaveChangesAsync(token);
 
         return existingMessage.ProjectToDto();
     }
 
     public async Task<bool> DeleteAsync(Guid id, CancellationToken token = default)
     {
-        var existingMessage =  await _context.Messages.FindAsync(id, token);
+        var existingMessage =  await context.Messages.FindAsync(id, token);
 
         if (existingMessage is null)
         {
             return false;
         }
 
-        _context.Messages.Remove(existingMessage);
+        context.Messages.Remove(existingMessage);
 
-        await _context.SaveChangesAsync(token);
+        await context.SaveChangesAsync(token);
 
         return true;
     }

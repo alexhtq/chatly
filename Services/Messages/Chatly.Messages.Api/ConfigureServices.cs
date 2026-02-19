@@ -1,4 +1,5 @@
 using Chatly.Messages.Api.Database;
+using Chatly.Messages.Api.Database.Interceptors;
 using Chatly.Messages.Api.Middleware;
 using Chatly.Messages.Api.Services;
 using Chatly.Shared.Messages.Validators;
@@ -15,6 +16,7 @@ public static class ConfigureServices
         builder.Services.AddOpenApi();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateMessageValidator>();
         builder.Services.AddScoped<IMessageService, MessageService>();
+        builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.AddProblemDetailsForFailedRequests();
         builder.AddDatabase();
@@ -44,7 +46,10 @@ public static class ConfigureServices
 
             options
                 .UseNpgsql(dbConnectionString)
-                .LogTo(Console.WriteLine);
+                //.LogTo(Console.WriteLine)
+                .AddInterceptors(
+                    new TimestampInterceptor(
+                        builder.Services.BuildServiceProvider().GetRequiredService<TimeProvider>()));
         });
     }
 

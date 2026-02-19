@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Chatly.Messages.Api.Database.Migrations
 {
     [DbContext(typeof(MessagesContext))]
-    [Migration("20260218234224_Initial")]
+    [Migration("20260219174739_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
