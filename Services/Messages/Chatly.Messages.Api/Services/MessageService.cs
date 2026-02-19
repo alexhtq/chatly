@@ -29,12 +29,13 @@ public class MessageService(MessagesContext context) : IMessageService
         return message;
     }
 
-    public async Task<MessageDto> CreateAsync(
-        CreateMessageCommand command,
-        CancellationToken token = default)
+    public async Task<MessageDto> CreateAsync(CreateMessageCommand command, CancellationToken token = default)
     {      
-        Message message = command.ToMessage();
-        
+        Message message = new Message
+        {
+            Content = command.Content
+        };
+         
         await _context.Messages.AddAsync(message, token);
         
         await _context.SaveChangesAsync(token);
@@ -46,18 +47,16 @@ public class MessageService(MessagesContext context) : IMessageService
         Guid id,
         UpdateMessageCommand command,
         CancellationToken token = default)
-    {
-        var messageInput = command.ToMessageWithId(id);
-        
+    {        
         Message? existingMessage = await _context.Messages
-            .FirstOrDefaultAsync(m => m.Id == messageInput.Id, token);
+            .FirstOrDefaultAsync(m => m.Id == id, token);
 
-        if (existingMessage == null)
+        if (existingMessage is null)
         {
             return null;
         }
 
-        messageInput.CopyTo(existingMessage);
+        existingMessage.Content = command.Content;
 
         await _context.SaveChangesAsync(token);
 
@@ -68,7 +67,7 @@ public class MessageService(MessagesContext context) : IMessageService
     {
         var existingMessage =  await _context.Messages.FindAsync(id, token);
 
-        if (existingMessage == null)
+        if (existingMessage is null)
         {
             return false;
         }

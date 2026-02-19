@@ -8,10 +8,10 @@ public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
 {
     public CreateMessageValidator()
     {
-        RuleFor(x => x.Text)
+        RuleFor(x => x.Content)
             .NotEmpty()
                 .WithMessage("Message is required.")
-            .MaximumLength(MaxLengths.Messages.Text)
+            .MaximumLength(MaxLengths.Messages.Content)
                 .WithMessage("Message must not exceed {MaxLength} characters.");
     }
 }

@@ -16,6 +16,8 @@ public static class ConfigureApp
         app.UseExceptionHandler();
         app.UseCors("AllowFrontend");
         
+        // Serving the Blazor app from the API is for faster development and testing.
+        // In production, the frontend is deployed in a separate container.
         var hostBlazorApp = app.Configuration.GetValue<bool?>("HostBlazorApp") 
             ?? throw new InvalidOperationException("HostBlazorApp configuration is required");
         

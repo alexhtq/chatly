@@ -9,12 +9,19 @@ public class MessageConfguration : IEntityTypeConfiguration<Message>
 {
     public void Configure(EntityTypeBuilder<Message> builder)
     {
-        builder.HasKey (m => m.Id);
+        builder
+            .ToTable("Messages")
+            .HasKey (m => m.Id);
 
-        builder.Property(m => m.Text)
+        builder.Property(m => m.Content)
+            .HasColumnName("Content")
             .IsRequired()
-            .HasMaxLength(MaxLengths.Messages.Text);
+            .HasMaxLength(MaxLengths.Messages.Content);
 
-        builder.ToTable("Messages");
+        builder.Property(m => m.CreatedAt)
+            .HasColumnName("CreatedAt");
+
+        builder.Property(m => m.UpdatedAt)
+            .HasColumnName("UpdatedAt");
     }
 }
