@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Chatly.Messages.Api.Database.Migrations
 {
     [DbContext(typeof(MessagesContext))]
-    [Migration("20260218161126_Initial")]
+    [Migration("20260218234224_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -34,7 +34,16 @@ namespace Chatly.Messages.Api.Database.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("Content");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id");
 

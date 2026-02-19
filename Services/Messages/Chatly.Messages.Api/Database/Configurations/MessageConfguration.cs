@@ -14,7 +14,14 @@ public class MessageConfguration : IEntityTypeConfiguration<Message>
             .HasKey (m => m.Id);
 
         builder.Property(m => m.Content)
+            .HasColumnName("Content")
             .IsRequired()
             .HasMaxLength(MaxLengths.Messages.Content);
+
+        builder.Property(m => m.CreatedAt)
+            .HasColumnName("CreatedAt");
+
+        builder.Property(m => m.UpdatedAt)
+            .HasColumnName("UpdatedAt");
     }
 }
