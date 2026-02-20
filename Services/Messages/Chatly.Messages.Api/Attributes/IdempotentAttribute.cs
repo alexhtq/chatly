@@ -14,10 +14,16 @@ public class IdempotentAttribute : Attribute, IAsyncActionFilter
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        // Validate header.
+        // Header missing - execute normally without caching
         if (!context.HttpContext.Request.Headers.TryGetValue(
-                IdempotencyKeyHeader, out StringValues idempotencyKeyValue) ||
-            !Guid.TryParse(idempotencyKeyValue, out Guid idempotencyKey))
+                IdempotencyKeyHeader, out StringValues idempotencyKeyValue))
+        {
+            await next();
+            return;
+        }
+
+        // Header exists - validate it's a valid GUID and then apply idempotency logic
+        if (!Guid.TryParse(idempotencyKeyValue, out Guid idempotencyKey))
         {
             var problemDetailsFactory = context.HttpContext.RequestServices
                 .GetRequiredService<ProblemDetailsFactory>();
@@ -25,9 +31,9 @@ public class IdempotentAttribute : Attribute, IAsyncActionFilter
             var problemDetails = problemDetailsFactory.CreateProblemDetails(
                 httpContext: context.HttpContext,
                 statusCode: StatusCodes.Status400BadRequest,
-                detail: $"Invalid or missing {IdempotencyKeyHeader} header."
+                detail: $"Invalid {IdempotencyKeyHeader} header. Must be a valid GUID."
             );
-            
+        
             context.Result = new BadRequestObjectResult(problemDetails);
             
             return;
