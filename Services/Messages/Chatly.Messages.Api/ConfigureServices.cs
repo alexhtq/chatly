@@ -18,6 +18,7 @@ public static class ConfigureServices
         builder.Services.AddScoped<IMessageService, MessageService>();
         builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddMemoryCache();
         builder.AddProblemDetailsForFailedRequests();
         builder.AddDatabase();
         builder.AddCorsPolicy();
