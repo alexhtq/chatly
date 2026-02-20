@@ -45,9 +45,8 @@ public class IdempotentAttribute : Attribute, IAsyncActionFilter
         }
 
         // Cache miss.
-        var executedContext = await next();
-        if (executedContext.Result is CreatedAtActionResult createdResult && 
-            createdResult.StatusCode is >= 200 and < 300)
+        var executedContext = await next(); 
+        if (executedContext.Result is CreatedAtActionResult createdResult)
         {
             cache.Set(cacheKey, createdResult, _cacheDuration);
         }
