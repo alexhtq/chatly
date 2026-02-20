@@ -1,3 +1,4 @@
+using Chatly.Messages.Api.Attributes;
 using Chatly.Messages.Api.Services;
 using Chatly.Shared.Constants;
 using Chatly.Shared.Messages;
@@ -35,6 +36,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     }
     
     [HttpPost(Routes.Api.Messages.Create)]
+    //[Idempotent]
     [ProducesResponseType(typeof(MessageDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MessageDto>> Create(
@@ -46,14 +48,14 @@ public class MessagesController(IMessageService messageService) : ControllerBase
 
         if (validationResult.IsValid is false)
         {
-            var problem = ProblemDetailsFactory.CreateProblemDetails(
+            var problemDetails = ProblemDetailsFactory.CreateProblemDetails(
                 httpContext: HttpContext,
                 statusCode: StatusCodes.Status400BadRequest,
                 detail: "One or more validation errors occurred.");
             
-            problem.Extensions.Add("errors", validationResult.ToDictionary());
+            problemDetails.Extensions.Add("errors", validationResult.ToDictionary());
 
-            return BadRequest(problem);
+            return BadRequest(problemDetails);
         }
 
         MessageDto createdMessage = await messageService.CreateAsync(command, token);
