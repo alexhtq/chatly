@@ -34,9 +34,9 @@ public class MessagesController(IMessageService messageService) : ControllerBase
 
         return Ok(message);
     }
-    
+
     [HttpPost(Routes.Api.Messages.Create)]
-    //[Idempotent]
+    [Idempotent] // Apply idempotency when Idempotency-Key header is present
     [ProducesResponseType(typeof(MessageDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MessageDto>> Create(
