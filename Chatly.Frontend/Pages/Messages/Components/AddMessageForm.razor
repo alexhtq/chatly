@@ -24,14 +24,20 @@
     [Inject]
     public HttpClient HttpClient { get; set; } = null!;
     
+    private string _idempotencyKey = Guid.NewGuid().ToString();
+
     private async Task OnValidSubmitAsync()
     {       
-        var response = await HttpClient.PostAsJsonAsync(
-            Routes.Api.Messages.Create, Command);
+        var response = await HttpClient.PostAsJsonAsyncWithIdempotency(
+            Routes.Api.Messages.Create, Command, _idempotencyKey);
 
         if (response.IsSuccessStatusCode is true)
         {
+            // On success, reset idempotency key for the next submission.
+            _idempotencyKey = Guid.NewGuid().ToString();
+            
             await OnMessageAdded.InvokeAsync();
         }
+        // On failure, keep the same idempotency key for retry.
     }
 }
