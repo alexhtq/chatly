@@ -4,6 +4,7 @@ using Chatly.Messages.Api.Middleware;
 using Chatly.Messages.Api.Services;
 using Chatly.Shared.Messages.Validators;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chatly.Messages.Api;
@@ -13,18 +14,26 @@ public static class ConfigureServices
     public static void AddServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
+
         builder.Services.AddOpenApi();
+
         builder.Services.AddValidatorsFromAssemblyContaining<CreateMessageValidator>();
+        builder.Services.AddFluentValidationAutoValidation();
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.AddProblemDetails();
+
         builder.Services.AddScoped<IMessageService, MessageService>();
         builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
         builder.Services.AddMemoryCache();
-        builder.AddProblemDetailsForFailedRequests();
+
         builder.AddDatabase();
+        
         builder.AddCorsPolicy();
     }
 
-    private static void AddProblemDetailsForFailedRequests(this WebApplicationBuilder builder)
+    private static void AddProblemDetails(this WebApplicationBuilder builder)
     {
         builder.Services.AddProblemDetails(options =>
         {

@@ -3,7 +3,6 @@ using Chatly.Messages.Api.Services;
 using Chatly.Shared.Constants;
 using Chatly.Shared.Messages;
 using Chatly.Shared.Messages.Commands;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chatly.Messages.Api.Controllers;
@@ -41,23 +40,8 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MessageDto>> Create(
         [FromBody] CreateMessageCommand command,
-        IValidator<CreateMessageCommand> validator,
         CancellationToken token = default)
     {
-        var validationResult = await validator.ValidateAsync(command, token);
-
-        if (validationResult.IsValid is false)
-        {
-            var problemDetails = ProblemDetailsFactory.CreateProblemDetails(
-                httpContext: HttpContext,
-                statusCode: StatusCodes.Status400BadRequest,
-                detail: "One or more validation errors occurred.");
-            
-            problemDetails.Extensions.Add("errors", validationResult.ToDictionary());
-
-            return BadRequest(problemDetails);
-        }
-
         MessageDto createdMessage = await messageService.CreateAsync(command, token);
 
         return CreatedAtAction(
@@ -73,23 +57,8 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     public async Task<ActionResult> Update(
         [FromRoute] Guid id,
         [FromBody] UpdateMessageCommand command,
-        IValidator<UpdateMessageCommand> validator,
         CancellationToken token = default)
     {
-        var validationResult = await validator.ValidateAsync(command, token);
-
-        if (validationResult.IsValid is false)
-        {
-            var problemDetails = ProblemDetailsFactory.CreateProblemDetails(
-                httpContext: HttpContext,
-                statusCode: StatusCodes.Status400BadRequest,
-                detail: "One or more validation errors occurred.");
-            
-            problemDetails.Extensions.Add("errors", validationResult.ToDictionary());
-
-            return BadRequest(problemDetails);
-        }
-
         MessageDto? updatedMessage = await messageService.UpdateAsync(id, command, token);
             
         if (updatedMessage is null)
