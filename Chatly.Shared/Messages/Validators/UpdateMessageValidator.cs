@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Chatly.Shared.Messages.Validators;
 
-public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
+public class UpdateMessageValidator : AbstractValidator<UpdateMessageCommand>
 {
-    public CreateMessageValidator()
+    public UpdateMessageValidator()
     {
         RuleFor(x => x.Content).ValidMessageContent();
     }
