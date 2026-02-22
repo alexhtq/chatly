@@ -1,7 +1,7 @@
 ﻿@attribute [Route(Routes.Pages.Messages.Index)]
 <PageTitle>Messages</PageTitle>
 
-<div class="d-flex mb-4">
+<div class="d-flex mt-4 mb-4">
     <a class="btn btn-outline-primary" href="@Routes.Pages.Messages.Create">Add Message</a>
 </div>
 
@@ -11,7 +11,7 @@
 }
 else
 {
-    <table class="table">
+    <table class="table table-borderless">
         <tbody>
         @foreach (var message in _messages)
         {
@@ -19,10 +19,10 @@ else
                 <td class="w-100">@message.Content</td>
                 <td class="text-end">
                     <div class="d-inline-flex align-items-center gap-2">
-                        <button class="btn btn-outline-primary" @onclick="@(() => GoToUpdatePage(message))">
+                        <button class="btn btn-outline-primary" @onclick="() => GoToUpdatePage(message)">
                             Edit
                         </button>
-                        <button class="btn btn-outline-danger" @onclick="@(() => DeleteMessageAsync(message))">
+                        <button class="btn btn-outline-danger" @onclick="() => DeleteMessageAsync(message)">
                             Delete
                         </button>
                     </div>
