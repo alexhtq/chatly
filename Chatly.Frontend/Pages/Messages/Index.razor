@@ -1,18 +1,11 @@
-﻿@using Chatly.Frontend.Pages.Messages.Components
-
-@attribute [Route(Routes.Pages.Messages.Index)]
-
+﻿@attribute [Route(Routes.Pages.Messages.Index)]
 <PageTitle>Messages</PageTitle>
 
-<div class="mb-5">
-    <AddMessageForm Command="new CreateMessageCommand()" OnMessageAdded="RefreshMessages"/>
+<div class="d-flex mb-4">
+    <a class="btn btn-outline-primary" href="@Routes.Pages.Messages.Create">Add Message</a>
 </div>
 
-<div>
-    All messages:
-</div>
-
-@if (_messages is null)
+@if (_messages == null)
 {
     <div>Loading...</div>
 }
@@ -20,35 +13,54 @@ else
 {
     <table class="table">
         <tbody>
-            @foreach (var message in _messages)
-            {
-                <tr>
-                    <td>@message.Content</td>
-                </tr>
-            }
+        @foreach (var message in _messages)
+        {
+            <tr>
+                <td class="w-100">@message.Content</td>
+                <td class="text-end">
+                    <div class="d-inline-flex align-items-center gap-2">
+                        <button class="btn btn-outline-primary" @onclick="@(() => GoToUpdatePage(message))">
+                            Edit
+                        </button>
+                        <button class="btn btn-outline-danger" @onclick="@(() => DeleteMessageAsync(message))">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 }
 
-@code {   
-    [Inject]
-    public  HttpClient HttpClient { get; set; } = null!;
-    
+@code {
     private List<MessageDto>? _messages;
 
-    private async Task LoadMessagesAsync()
+    [Inject]
+    public HttpClient HttpClient { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
     {
         _messages = await HttpClient.GetFromJsonAsync<List<MessageDto>>(Routes.Api.Messages.GetAll);
     }
 
-    protected override async Task OnInitializedAsync()
+    private void GoToUpdatePage(MessageDto message)
     {
-        await LoadMessagesAsync();
+        var route = Routes.Pages.Messages.Update.Format(message.Id);
+        NavigationManager.NavigateTo(route);
     }
 
-    private async Task RefreshMessages()
+    private async Task DeleteMessageAsync(MessageDto message)
     {
-        await LoadMessagesAsync();
-        StateHasChanged();
+        var route = Routes.Api.Messages.Delete.Format(message.Id);
+        var response = await HttpClient.DeleteAsync(route);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _messages?.Remove(message);
+        }
     }
 }

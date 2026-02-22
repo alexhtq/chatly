@@ -1,0 +1,40 @@
+<EditForm
+    Model="@Command"
+    OnValidSubmit="@OnValidSubmit">
+    
+    <FluentValidationValidator/>
+    
+    <div class="row mb-3">
+        <div class="col-12">
+            <label>
+                Your message:
+                <InputTextArea 
+                    style="width: 500px;" 
+                    class="form-control" 
+                    @bind-Value="Command.Content" 
+                    rows="2"/>
+            </label>
+            <ValidationMessage For="() => Command.Content"/>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+        <button class="btn btn-primary" type="submit">@SubmitButtonText</button>
+        <a class="btn btn-outline-primary" href="@CancelUrl">Cancel</a>
+    </div>
+    
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired]
+    public IMessageCommand Command { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter, EditorRequired]
+    public string SubmitButtonText { get; set; } = null!;
+
+    [Parameter]
+    public string CancelUrl { get; set; } = Routes.Pages.Messages.Index;
+}

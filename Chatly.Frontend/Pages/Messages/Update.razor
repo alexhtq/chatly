@@ -1,0 +1,37 @@
+﻿@attribute [Route(Routes.Pages.Messages.Update)]
+<PageTitle>Edit Message</PageTitle>
+
+@if (_command == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <UpdateMessageForm Id="Id" Command="_command"/>
+}
+
+@code {
+    private UpdateMessageCommand? _command;
+
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    [Inject]
+    public HttpClient HttpClient { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var route = Routes.Api.Messages.GetById.Format(Id);
+        var message = await HttpClient.GetFromJsonAsync<MessageDto>(route);
+
+        if (message == null)
+        {
+            return;
+        }
+
+        _command = new UpdateMessageCommand
+        {
+            Content = message.Content
+        };
+    }
+}
