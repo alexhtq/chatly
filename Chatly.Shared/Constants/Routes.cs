@@ -1,7 +1,20 @@
+using System.Text.RegularExpressions;
+
 namespace Chatly.Shared.Constants;
 
-public static class Routes
+public static partial class Routes
 {
+    [GeneratedRegex("{.*?}")]
+    private static partial Regex StringFormatArgsRegex();
+
+    public static string Format(this string template, params object[] args)
+    {
+        var index = 0;
+        var formattedTemplate = StringFormatArgsRegex().Replace(template, _ => $"{{{index++}}}");
+        
+        return string.Format(formattedTemplate, args);
+    }
+
     public static class Api
     {
         public static class Messages
@@ -21,6 +34,8 @@ public static class Routes
         public static class Messages
         {
             public const string Index = "/messages";
+            public const string Create = "/messages/create";
+            public const string Update = "/messages/update/{id:guid}";
         }      
     }
 }

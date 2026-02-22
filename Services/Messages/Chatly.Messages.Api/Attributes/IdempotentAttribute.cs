@@ -1,3 +1,4 @@
+using Chatly.Shared.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -9,14 +10,13 @@ namespace Chatly.Messages.Api.Attributes;
 [AttributeUsage(AttributeTargets.Method)]
 public class IdempotentAttribute : Attribute, IAsyncActionFilter
 {
-    private const string IdempotencyKeyHeader = "Idempotency-Key";
     private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         // Header missing - execute normally without caching
         if (!context.HttpContext.Request.Headers.TryGetValue(
-                IdempotencyKeyHeader, out StringValues idempotencyKeyValue))
+                HttpHeaders.IdempotencyKey, out StringValues idempotencyKeyValue))
         {
             await next();
             return;
@@ -31,7 +31,7 @@ public class IdempotentAttribute : Attribute, IAsyncActionFilter
             var problemDetails = problemDetailsFactory.CreateProblemDetails(
                 httpContext: context.HttpContext,
                 statusCode: StatusCodes.Status400BadRequest,
-                detail: $"Invalid {IdempotencyKeyHeader} header. Must be a valid GUID."
+                detail: $"Invalid {HttpHeaders.IdempotencyKey} header. Must be a valid GUID."
             );
         
             context.Result = new BadRequestObjectResult(problemDetails);
