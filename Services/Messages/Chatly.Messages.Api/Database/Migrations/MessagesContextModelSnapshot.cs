@@ -30,8 +30,8 @@ namespace Chatly.Messages.Api.Database.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("Content");
 
                     b.Property<DateTimeOffset>("CreatedAt")

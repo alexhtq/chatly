@@ -4,6 +4,6 @@ public static class MaxLengths
 {
     public static class Messages
     {
-        public const int Content = 150;
+        public const int Content = 100;
     }
 }

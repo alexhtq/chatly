@@ -1,11 +1,10 @@
 using System.Net.Http.Json;
+using Chatly.Shared.Constants;
 
 namespace Chatly.Frontend.Extensions;
 
 public static class HttpClientExtensions
 {
-    private const string IdempotencyKeyHeader = "Idempotency-Key";
-
     public static Task<HttpResponseMessage> PostAsJsonAsyncWithIdempotency<T>(
         this HttpClient client,
         string requestUri,
@@ -20,7 +19,7 @@ public static class HttpClientExtensions
         };
         
         // Add custom header.
-        request.Headers.Add(IdempotencyKeyHeader, idempotencyKey);
+        request.Headers.Add(HttpHeaders.IdempotencyKey, idempotencyKey);
         
         // Send the request through HttpClient
         return client.SendAsync(request, cancellationToken);
