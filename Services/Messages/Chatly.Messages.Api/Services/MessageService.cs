@@ -12,6 +12,7 @@ public class MessageService(MessagesContext context) : IMessageService
     public async Task<List<MessageDto>> GetAllAsync(CancellationToken token = default)
     {
         List<MessageDto> messages = await context.Messages
+            .OrderBy(m => m.CreatedAt)
             .ProjectToDto()
             .ToListAsync(token);
         

@@ -1,0 +1,33 @@
+﻿<MessageForm
+    Command="Command"
+    OnValidSubmit="@OnValidSubmitAsync"
+    SubmitButtonText="Send" />
+            
+@code {
+    [Parameter, EditorRequired]
+    public CreateMessageCommand Command { get; set; } = null!;
+
+    [Inject]
+    public HttpClient HttpClient { get; set; } = null!;
+    
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    private string _idempotencyKey = Guid.NewGuid().ToString();
+    
+    private async Task OnValidSubmitAsync()
+    {      
+        var response = await HttpClient.PostAsJsonAsyncWithIdempotency(
+            Routes.Api.Messages.Create, Command, _idempotencyKey);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // On success, reset idempotency key for the next submission.
+            _idempotencyKey = Guid.NewGuid().ToString();
+            
+            NavigationManager.NavigateTo(Routes.Pages.Messages.Index);
+        }
+
+        // On failure, keep the same idempotency key for retry.
+    }
+}

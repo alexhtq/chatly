@@ -1,0 +1,29 @@
+﻿<MessageForm
+    Command="Command"
+    OnValidSubmit="@OnValidSubmitAsync"
+    SubmitButtonText="Update" />
+
+@code {
+    [Parameter, EditorRequired]
+    public UpdateMessageCommand Command { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public Guid Id { get; set; }
+
+    [Inject]
+    public HttpClient HttpClient { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+    
+    private async Task OnValidSubmitAsync()
+    {               
+        var route = Routes.Api.Messages.Update.Format(Id);
+        var response = await HttpClient.PutAsJsonAsync(route, Command);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo(Routes.Pages.Messages.Index);
+        }
+    }
+}
