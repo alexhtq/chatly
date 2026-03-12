@@ -3,7 +3,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Chatly.Frontend/Dockerfile
+      dockerfile: src/Chatly.Frontend/Dockerfile
     image: chatly-frontend
     ports:
       - 4000:80
@@ -13,7 +13,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Services/Messages/Chatly.Messages.Api/Dockerfile
+      dockerfile: src/Services/Messages/Chatly.Messages.Api/Dockerfile
     image: chatly-api
     ports:
       - 8080:8080
