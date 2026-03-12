@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SharedProjectPathForApi Condition="'$(SharedProjectPathForApi)' == ''">../../../Chatly.Shared/Chatly.Shared.csproj</SharedProjectPathForApi>
   </PropertyGroup>
 
   <ItemGroup>

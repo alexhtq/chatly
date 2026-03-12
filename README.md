@@ -1,18 +1,23 @@
 # Chatly
 
-Chatly is a simple messaging application built with .NET 10, created for experimentation and learning.
+Chatly is a messaging app built with .NET 10, created for experimentation and learning purposes.
 
-## Overview
+## Tech Stack
 
-Chatly consists of a Blazor WASM frontend and a .NET API, orchestrated via Docker Compose.
+- .NET 10
+- ASP.NET Core API
+- Blazor WebAssembly
+- PostgreSQL
+- Entity Framework Core
+- Docker & Docker Compose
 
 ## Quick Start
 
 1. Ensure Docker is installed.
 
-2. From the project root, build and launch all services:
+2. From the project root, run:
    ```bash
-   docker-compose up --build
+   docker compose up
    ```
 3. Access the application:
    - Frontend: [http://localhost:4000](http://localhost:4000)
