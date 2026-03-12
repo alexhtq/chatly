@@ -2,15 +2,6 @@
 
 Chatly is a messaging app built with .NET 10, created for experimentation and learning purposes.
 
-## Tech Stack
-
-- .NET 10
-- ASP.NET Core API
-- Blazor WebAssembly
-- PostgreSQL
-- Entity Framework Core
-- Docker & Docker Compose
-
 ## Quick Start
 
 1. Ensure Docker is installed.
