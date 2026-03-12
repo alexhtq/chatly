@@ -1,10 +1,10 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["Services/Messages/Chatly.Messages.Api/Chatly.Messages.Api.csproj", "Chatly.Messages.Api/"]
+COPY ["src/Services/Messages/Chatly.Messages.Api/Chatly.Messages.Api.csproj", "Chatly.Messages.Api/"]
 RUN dotnet restore "Chatly.Messages.Api/Chatly.Messages.Api.csproj"
-COPY ["Services/Messages/Chatly.Messages.Api", "Chatly.Messages.Api"]
-COPY ["Chatly.Shared", "Chatly.Shared"]
+COPY ["src/Services/Messages/Chatly.Messages.Api", "Chatly.Messages.Api"]
+COPY ["src/Chatly.Shared", "Chatly.Shared"]
 WORKDIR "/src/Chatly.Messages.Api"
 RUN dotnet publish "Chatly.Messages.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:SharedProjectPathForApi=../Chatly.Shared/Chatly.Shared.csproj
 
