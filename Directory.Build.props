@@ -1,5 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <SharedProjectPathForApi>..\..\..\Chatly.Shared\Chatly.Shared.csproj</SharedProjectPathForApi>
-  </PropertyGroup>
-</Project>
